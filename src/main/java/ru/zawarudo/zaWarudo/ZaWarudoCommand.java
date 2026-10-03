@@ -70,7 +70,7 @@ public class ZaWarudoCommand implements CommandExecutor {
                         );
                     }
                 },
-                100L
+                150L
         );
 
         Bukkit.getScheduler().runTaskLater(
