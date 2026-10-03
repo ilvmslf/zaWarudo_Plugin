@@ -8,6 +8,8 @@ public final class ZaWarudo extends JavaPlugin {
     public void onEnable() {
         var command = getCommand("za_warudo");
         if (command != null) { command.setExecutor(new ZaWarudoCommand()); }
+
+        getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
     }
 
     @Override

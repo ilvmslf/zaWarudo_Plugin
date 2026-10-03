@@ -45,6 +45,19 @@ public class ZaWarudoCommand implements CommandExecutor {
             }
         }
 
+        Bukkit.getServer().getServerTickManager().setFrozen(true);
+
+        Bukkit.getScheduler().runTaskLater(
+                ZaWarudo.getPlugin(ZaWarudo.class),
+                () -> {
+                    frozenPlayers.clear();
+                    Bukkit.getServer().getServerTickManager().setFrozen(false);
+                },
+                400L
+        );
+
+
+
         return true;
     }
 }
