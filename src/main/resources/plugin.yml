@@ -1,0 +1,12 @@
+name: ZaWarudo
+version: '${version}'
+
+main: ru.zawarudo.zaWarudo.ZaWarudo
+api-version: '1.21.11'
+load: POSTWORLD
+
+commands:
+  za_warudo:
+    description: Time-Stop
+    usage: /za_warudo
+    aliases: [zawarudo, zw]
