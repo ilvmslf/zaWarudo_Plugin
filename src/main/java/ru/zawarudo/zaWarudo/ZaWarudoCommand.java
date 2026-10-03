@@ -9,6 +9,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -52,11 +55,33 @@ public class ZaWarudoCommand implements CommandExecutor {
                 () -> {
                     frozenPlayers.clear();
                     Bukkit.getServer().getServerTickManager().setFrozen(false);
-                },
-                400L
+                    for (int i = 0; i < player.getInventory().getSize(); i++) {
+                        ItemStack item = player.getInventory().getItem(i);
+                        if (item == null) continue;
+                        if (item.getType() != Material.STICK) continue;
+                        if (!item.hasItemMeta()) continue;
+                        if (!item.getItemMeta().hasDisplayName()) continue;
+
+                        Component displayName = item.getItemMeta().displayName();
+                        if (displayName != null && displayName.equals(Component.text("Бан-палка", NamedTextColor.GOLD))) {
+                            player.getInventory().setItem(i, null);
+                        }
+                    }
+                    },
+                300L
         );
 
-
+        // Выдача палки
+        ItemStack banStick = new ItemStack(Material.STICK);
+        ItemMeta meta = banStick.getItemMeta();
+        if (meta != null) {
+            meta.displayName(Component.text("Бан-палка", NamedTextColor.GOLD));
+            meta.lore(java.util.List.of(
+                    Component.text("Ударь негодяя и отправь его в бан", NamedTextColor.RED)
+            ));
+            banStick.setItemMeta(meta);
+        }
+        player.getInventory().addItem(banStick);
 
         return true;
     }

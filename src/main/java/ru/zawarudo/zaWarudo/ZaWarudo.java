@@ -10,6 +10,7 @@ public final class ZaWarudo extends JavaPlugin {
         if (command != null) { command.setExecutor(new ZaWarudoCommand()); }
 
         getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
+        getServer().getPluginManager().registerEvents(new BanStickListener(), this);
     }
 
     @Override
