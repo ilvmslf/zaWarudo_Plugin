@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -39,7 +40,15 @@ public class ZaWarudoCommand implements CommandExecutor {
                 )
         );
 
-        for (Player online : Bukkit.getOnlinePlayers()) { online.showTitle(title); };
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            online.showTitle(title);
+
+            online.playSound(
+                    online.getLocation(),
+                    Sound.BLOCK_BEACON_ACTIVATE,
+                    1.0f, 1.5f
+            );
+        };
 
         frozenPlayers.clear();
         for (Player online : Bukkit.getOnlinePlayers()) {
@@ -49,6 +58,20 @@ public class ZaWarudoCommand implements CommandExecutor {
         }
 
         Bukkit.getServer().getServerTickManager().setFrozen(true);
+
+        Bukkit.getScheduler().runTaskLater(
+                ZaWarudo.getPlugin(ZaWarudo.class),
+                () -> {
+                    for (Player online : Bukkit.getOnlinePlayers()) {
+                        online.playSound(
+                                online.getLocation(),
+                                org.bukkit.Sound.BLOCK_PORTAL_TRIGGER,
+                                1.0f, 1.5f
+                        );
+                    }
+                },
+                100L
+        );
 
         Bukkit.getScheduler().runTaskLater(
                 ZaWarudo.getPlugin(ZaWarudo.class),
@@ -68,7 +91,7 @@ public class ZaWarudoCommand implements CommandExecutor {
                         }
                     }
                     },
-                300L
+                200L
         );
 
         // Выдача палки
