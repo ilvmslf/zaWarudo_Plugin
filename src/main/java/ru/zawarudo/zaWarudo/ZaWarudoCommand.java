@@ -23,10 +23,50 @@ public class ZaWarudoCommand implements CommandExecutor {
     // UUID Типочков (жертв)
     public static final Set<UUID> frozenPlayers = new HashSet<>();
 
+    // Флажок на тайм-стоп
+    private static boolean active = false;
+
+    // Время кд
+    private static long cooldown = 0;
+
+    private final ZaWarudo plugin;
+
+    public ZaWarudoCommand(ZaWarudo plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Как ты посмел...");
+            return true;
+        }
+
+        // Проверка на наличие силы Za Warudo
+        String owner = plugin.getConfig().getString("owner", "");
+        if (owner.isEmpty() || !player.getName().equalsIgnoreCase(owner)) {
+            player.sendMessage(Component.text("Как ты посмел, ничтожество, у тебя нет силы Za warudo!", NamedTextColor.RED));
+            player.setHealth(1.0);
+            player.playSound(
+                    player.getLocation(),
+                    org.bukkit.Sound.ENTITY_ENDER_DRAGON_GROWL,
+                    1.0f, 1.0f
+            );
+            return true;
+        }
+
+        // Проверка на то, активен ли Za Wardo сейчас или нет
+        if (active) {
+            player.sendMessage(Component.text("Za Warudo уже активирован, молись что это не за тобой...", NamedTextColor.GOLD));
+            return true;
+        }
+
+        active = true;
+
+        long now = System.currentTimeMillis();
+        if (now < cooldown) {
+            long secondLeft = (cooldown - now) / 1000 + 1;
+            player.sendMessage(Component.text("Ещё не время, восстановись, подожди ещё" + secondLeft + "секунд...", NamedTextColor.GOLD));
             return true;
         }
 
@@ -76,6 +116,7 @@ public class ZaWarudoCommand implements CommandExecutor {
         Bukkit.getScheduler().runTaskLater(
                 ZaWarudo.getPlugin(ZaWarudo.class),
                 () -> {
+                    active = false;
                     frozenPlayers.clear();
                     Bukkit.getServer().getServerTickManager().setFrozen(false);
                     for (int i = 0; i < player.getInventory().getSize(); i++) {

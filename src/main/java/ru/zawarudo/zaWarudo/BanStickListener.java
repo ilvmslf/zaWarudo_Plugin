@@ -13,6 +13,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import java.util.Date;
 
 public class BanStickListener implements Listener {
+    private final ZaWarudo plugin;
+
+    public BanStickListener(ZaWarudo plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onPlayerHit(EntityDamageByEntityEvent event) {
         // Атакующий
